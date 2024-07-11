@@ -2,14 +2,16 @@
 package db
 
 import (
-	"CRUD/config"
-	"CRUD/ent"
 	"context"
 	"database/sql"
 	"fmt"
 
+	"CRUD/config"
+	"CRUD/ent"
+
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
+	_ "github.com/lib/pq"
 )
 
 func ConnectDB(cfg *config.Config) (*ent.Client, error) {
