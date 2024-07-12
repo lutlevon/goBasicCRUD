@@ -18,7 +18,7 @@ func main() {
 	}
 	defer client.Close()
 
-	r := userRoute.GetRoutes()
+	r := userRoute.GetRoutes(client)
 
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatalf("could not start server")

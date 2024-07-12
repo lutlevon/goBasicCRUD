@@ -1,6 +1,8 @@
 package user_handlers
 
 import (
+	"CRUD/ent"
+	"context"
 	"encoding/json"
 	"net/http"
 
@@ -17,9 +19,15 @@ var users = []User{
 	{ID: "2", Name: "Von Sai"},
 }
 
-func GetUsers(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("content-Type", "application/json")
-	json.NewEncoder(w).Encode(users)
+func GetUsers(client *ent.Client) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		users, err := client.User.Query().All(context.Background())
+		if err != nil {
+			http.Error(w, "failed to query users", http.StatusInternalServerError)
+			return
+		}
+		json.NewEncoder(w).Encode(users)
+	}
 }
 
 func GetUserById(w http.ResponseWriter, r *http.Request) {
