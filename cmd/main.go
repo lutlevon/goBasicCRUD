@@ -2,11 +2,10 @@ package main
 
 import (
 	"log"
-	"net/http"
 
-	"CRUD/config"
-	"CRUD/db"
-	userRoute "CRUD/routes"
+	"CRUD/internal/config"
+	"CRUD/internal/db"
+	"CRUD/internal/server"
 )
 
 func main() {
@@ -18,9 +17,6 @@ func main() {
 	}
 	defer client.Close()
 
-	r := userRoute.GetRoutes(client)
-
-	if err := http.ListenAndServe(":3000", r); err != nil {
-		log.Fatalf("could not start server")
-	}
+	s := server.NewServer(cfg, client)
+	s.Run()
 }

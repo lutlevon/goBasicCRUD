@@ -6,8 +6,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	"CRUD/config"
 	"CRUD/ent"
+	"CRUD/internal/config"
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
