@@ -1,27 +1,51 @@
 package handlers
 
 import (
-	"CRUD/ent"
+	"CRUD/internal/services"
 	"context"
 	"encoding/json"
 	"net/http"
+	"strconv"
+
+	"github.com/go-chi/chi/v5"
 )
 
 type UserHandler struct {
-	client *ent.Client
+	userService *services.UserService
 }
 
-func NewUserHandler(client *ent.Client) *UserHandler {
-	return &UserHandler{client: client}
+func NewUserHandler(userService *services.UserService) *UserHandler {
+	return &UserHandler{userService: userService}
 }
 
 func (h *UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := h.client.User.Query().All(context.Background())
+	users, err := h.userService.GetUsers(context.Background())
 	if err != nil {
-		http.Error(w, "failed to query users", http.StatusInternalServerError)
+		http.Error(w, "failed to get users", http.StatusInternalServerError)
 		return
 	}
 	json.NewEncoder(w).Encode(users)
+}
+
+func (h *UserHandler) GetUserById(w http.ResponseWriter, r *http.Request) {
+	idStr := chi.URLParam(r, "id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, "invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	u, err := h.userService.GetUserById(context.Background(), id)
+	if err != nil {
+		http.Error(w, "user not found", http.StatusNotFound)
+		return
+	}
+
+	json.NewEncoder(w).Encode(u)
+}
+
+func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+
 }
 
 // func GetUserById(w http.ResponseWriter, r *http.Request) {
