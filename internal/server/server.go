@@ -5,6 +5,7 @@ import (
 	"CRUD/internal/config"
 	"CRUD/internal/handlers"
 	"CRUD/internal/routes"
+	"CRUD/internal/services"
 	"log"
 	"net/http"
 
@@ -18,7 +19,8 @@ type Server struct {
 }
 
 func NewServer(cfg *config.Config, client *ent.Client) *Server {
-	userHandler := handlers.NewUserHandler(client)
+	userService := services.NewUserService(client)
+	userHandler := handlers.NewUserHandler(userService)
 
 	router := routes.NewRouter(userHandler)
 
